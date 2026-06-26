@@ -12,14 +12,53 @@ export default function HomeScreen() {
   const onRefresh = useCallback(async()=>{setRefreshing(true);await load();setRefreshing(false);},[]);
   const filtered = stores.filter(s=>{const ms=!search||s.name.toLowerCase().includes(search.toLowerCase());const mc=cat==='all'||s.category===cat;return ms&&mc;});
   const cats = ['all',...new Set(stores.map(s=>s.category))];
+  const firstName = profile?.full_name?.split(' ')[0] || '';
   return (<SafeAreaView style={st.c}>
-    <View style={st.hd}><View><Text style={st.hi}>Ahla {profile?.full_name?.split(' ')[0]} 👋</Text><Text style={st.tag}>Spin. Visit. Win.</Text></View><Text style={{fontSize:36}}>🎯</Text></View>
-    <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.teal}/>}>
-      <View style={{paddingHorizontal:24,marginBottom:16}}><TextInput style={st.search} placeholder="Search stores..." placeholderTextColor={colors.textMuted} value={search} onChangeText={setSearch}/></View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft:24,marginBottom:24}}>{cats.map(c=>(<TouchableOpacity key={c} style={[st.chip,cat===c&&st.chipOn]} onPress={()=>setCat(c)}><Text style={{fontSize:16}}>{c==='all'?'🏪':categoryIcons[c]}</Text><Text style={[st.chipL,cat===c&&st.chipLOn]}>{c==='all'?'All':categoryLabels[c]||c}</Text></TouchableOpacity>))}</ScrollView>
-      <View style={st.grid}>{filtered.map(store=>(<TouchableOpacity key={store.id} style={st.card} onPress={()=>router.push('/store/'+store.id)}><Text style={{fontSize:32,marginBottom:8}}>{categoryIcons[store.category]||'🏪'}</Text><Text style={st.cardName} numberOfLines={1}>{store.name}</Text><Text style={st.cardAr} numberOfLines={1}>{store.name_ar}</Text><View style={st.cardFt}><Text style={st.cardPts}>+{store.points_per_visit} pts</Text></View></TouchableOpacity>))}</View>
+    <View style={st.hd}>
+      <View><Text style={st.hi}>Hey {firstName} 👋</Text><Text style={st.tag}>Where are you heading today?</Text></View>
+      <View style={st.logoPill}><Text style={{fontSize:20}}>🎯</Text></View>
+    </View>
+    <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.tealLight}/>}>
+      <View style={{paddingHorizontal:20,marginBottom:16}}>
+        <View style={st.searchWrap}><Text style={st.searchIcon}>🔍</Text><TextInput style={st.search} placeholder="Search stores..." placeholderTextColor={colors.textMuted} value={search} onChangeText={setSearch}/></View>
+      </View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{paddingLeft:20,marginBottom:20}}>{cats.map(c=>(<TouchableOpacity key={c} style={[st.chip,cat===c&&st.chipOn]} onPress={()=>setCat(c)}>
+        <Text style={{fontSize:14}}>{c==='all'?'🏪':categoryIcons[c]}</Text>
+        <Text style={[st.chipL,cat===c&&st.chipLOn]}>{c==='all'?'All':categoryLabels[c]||c}</Text>
+      </TouchableOpacity>))}</ScrollView>
+      <View style={st.grid}>{filtered.map(store=>(<TouchableOpacity key={store.id} style={st.card} onPress={()=>router.push('/store/'+store.id)} activeOpacity={0.7}>
+        <View style={st.cardIcon}><Text style={{fontSize:28}}>{categoryIcons[store.category]||'🏪'}</Text></View>
+        <Text style={st.cardName} numberOfLines={1}>{store.name}</Text>
+        <Text style={st.cardAr} numberOfLines={1}>{store.name_ar}</Text>
+        <View style={st.cardBottom}>
+          <View style={st.ptsBadge}><Text style={st.ptsText}>+{store.points_per_visit}</Text></View>
+          <Text style={st.cardRw}>{store.reward_visits_required} for reward</Text>
+        </View>
+      </TouchableOpacity>))}</View>
       <View style={{height:30}}/>
     </ScrollView>
   </SafeAreaView>);
 }
-const st = StyleSheet.create({ c:{flex:1,backgroundColor:colors.bg}, hd:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',padding:24,paddingBottom:16}, hi:{fontSize:22,fontWeight:'700',color:colors.text}, tag:{fontSize:13,color:colors.textDim,marginTop:2}, search:{backgroundColor:colors.bgCard,borderRadius:14,borderWidth:1,borderColor:colors.border,padding:14,fontSize:15,color:colors.text}, chip:{flexDirection:'row',alignItems:'center',gap:6,backgroundColor:colors.bgCard,borderRadius:999,paddingHorizontal:14,paddingVertical:8,marginRight:8,borderWidth:1,borderColor:colors.border}, chipOn:{borderColor:colors.teal,backgroundColor:colors.tealGlow}, chipL:{fontSize:13,color:colors.textDim,fontWeight:'500'}, chipLOn:{color:colors.tealLight}, grid:{flexDirection:'row',flexWrap:'wrap',paddingHorizontal:20,gap:10}, card:{width:'47%',backgroundColor:colors.bgCard,borderRadius:14,padding:16,borderWidth:1,borderColor:colors.border}, cardName:{fontSize:15,fontWeight:'600',color:colors.text}, cardAr:{fontSize:12,color:colors.textDim,marginTop:2}, cardFt:{marginTop:10,paddingTop:8,borderTopWidth:1,borderTopColor:colors.border}, cardPts:{fontSize:12,fontWeight:'600',color:colors.tealLight} });
+const st = StyleSheet.create({
+  c:{flex:1,backgroundColor:colors.bg},
+  hd:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingHorizontal:20,paddingTop:8,paddingBottom:16},
+  hi:{fontSize:24,fontWeight:'800',color:colors.text,letterSpacing:-0.5},
+  tag:{fontSize:13,color:colors.textDim,marginTop:4},
+  logoPill:{width:44,height:44,borderRadius:14,backgroundColor:colors.tealGlow,borderWidth:1,borderColor:'rgba(45,212,191,0.2)',justifyContent:'center',alignItems:'center'},
+  searchWrap:{flexDirection:'row',alignItems:'center',backgroundColor:colors.bgCard,borderRadius:16,borderWidth:1,borderColor:colors.border,paddingHorizontal:16},
+  searchIcon:{fontSize:16,marginRight:10},
+  search:{flex:1,paddingVertical:14,fontSize:15,color:colors.text},
+  chip:{flexDirection:'row',alignItems:'center',gap:6,backgroundColor:colors.bgCard,borderRadius:radius.full,paddingHorizontal:16,paddingVertical:10,marginRight:8,borderWidth:1,borderColor:colors.border},
+  chipOn:{borderColor:colors.tealLight,backgroundColor:colors.tealGlow},
+  chipL:{fontSize:13,color:colors.textMuted,fontWeight:'600'},
+  chipLOn:{color:colors.tealLight},
+  grid:{flexDirection:'row',flexWrap:'wrap',paddingHorizontal:16,gap:12},
+  card:{width:'47%',backgroundColor:colors.bgCard,borderRadius:20,padding:16,borderWidth:1,borderColor:colors.border},
+  cardIcon:{width:52,height:52,borderRadius:16,backgroundColor:colors.bgElevated,justifyContent:'center',alignItems:'center',marginBottom:12},
+  cardName:{fontSize:15,fontWeight:'700',color:colors.text},
+  cardAr:{fontSize:12,color:colors.textDim,marginTop:2},
+  cardBottom:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',marginTop:14,paddingTop:12,borderTopWidth:1,borderTopColor:colors.border},
+  ptsBadge:{backgroundColor:colors.tealGlow,borderRadius:8,paddingHorizontal:10,paddingVertical:4},
+  ptsText:{fontSize:13,fontWeight:'700',color:colors.tealLight},
+  cardRw:{fontSize:10,color:colors.textMuted},
+});
