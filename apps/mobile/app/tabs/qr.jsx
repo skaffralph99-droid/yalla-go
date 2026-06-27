@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Platform } from 'react-native';
 import { useAuth } from '../../src/lib/auth';
 import { colors, radius } from '../../src/lib/theme';
 export default function QRScreen() {
@@ -42,7 +42,7 @@ const s = StyleSheet.create({
   codeLabel:{fontSize:11,fontWeight:'700',color:'#9CA3AF',letterSpacing:3,marginBottom:12},
   codeMain:{fontSize:36,fontWeight:'900',color:'#0F172A',letterSpacing:8},
   codeLine:{width:60,height:2,backgroundColor:'#E5E7EB',marginVertical:14,borderRadius:1},
-  codeFull:{fontSize:9,color:'#9CA3AF',fontFamily:Platform?.OS==='ios'?'Menlo':'monospace'},
+  codeFull:{fontSize:9,color:'#9CA3AF',fontFamily:Platform.OS==='ios'?'Menlo':'monospace'},
   userInfo:{flexDirection:'row',alignItems:'center',padding:20,gap:14,borderTopWidth:1,borderTopColor:colors.border},
   avatar:{width:44,height:44,borderRadius:22,backgroundColor:colors.teal,justifyContent:'center',alignItems:'center'},
   avatarT:{fontSize:18,fontWeight:'700',color:'#fff'},
